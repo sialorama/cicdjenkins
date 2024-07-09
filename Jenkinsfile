@@ -19,7 +19,6 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
-                    sh "./mvn clean "
                     sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 }
             }
