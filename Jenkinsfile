@@ -16,7 +16,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the specified GitHub repository
-                git branch: 'main', url: 'https://github.com/sialorama/cicdjenkins.git', credentialsId: 'credgit'
+                git branch: 'main', url: 'https://github.com/sialorama/cicdjenkins.git', credentialsId: 'gitcred'
             }
         }
 
