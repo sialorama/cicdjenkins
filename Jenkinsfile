@@ -15,10 +15,12 @@ pipeline {
             }
         }
 
-        stage('Build') {
+stage('Build') {
             steps {
                 script {
-                    // Build the Docker image
+                     // Build .jar
+                    sh './mvnw clean package'
+                     // Build the Docker image
                     sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 }
             }
@@ -29,7 +31,7 @@ pipeline {
                 script {
                     // Run your tests here
                     // For example, you could run a container from the built image and execute tests inside it
-                    sh "docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG} your-test-command"
+                    sh "docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG} "
                 }
             }
         }
