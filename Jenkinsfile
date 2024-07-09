@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define environment variables if needed
-        DOCKER_IMAGE = "your-docker-image-name"
+        DOCKER_IMAGE = "myjenkins"
         DOCKER_TAG = "latest"
     }
 
