@@ -1,11 +1,11 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
+stage('Checkout') {
             steps {
                 // Checkout the code from the repository
-                git 'https://github.com/sialorama/cicdjenkins.git'
+                git branch: 'main', url:'https://github.com/sialorama/cicdjenkins.git', credentialsId: 'credgit'
+
             }
         }
 
