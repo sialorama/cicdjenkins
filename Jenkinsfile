@@ -13,12 +13,12 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Jar with Maven') {
             steps {
                 script {
-                    sh './gradlew build'
-                    archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+                    sh 'mvn clean package'
                 }
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
 
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        cp build/libs/cicdjenkins.jar .
+                        cp target/*.jar cicdjenkins.jar
                         docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
                     """
                 }
