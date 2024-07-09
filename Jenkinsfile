@@ -69,11 +69,11 @@ pipeline {
 
     post {
         always {
-            // Cleanup step to remove the Docker image from the local registry
+            // Ensure the cleanup step is within the proper context
             script {
-                def dockerImage = env.DOCKER_IMAGE
-                def dockerTag = env.DOCKER_TAG
-                sh "docker rmi ${dockerImage}:${dockerTag}"
+                docker.image('docker:latest').inside('-v /var/run/docker.sock:/var/run/docker.sock') {
+                    sh "docker rmi ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
+                }
             }
         }
     }
