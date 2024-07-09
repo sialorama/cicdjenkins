@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         // Define environment variables for Docker image name and tag
-        DOCKER_IMAGE = "your-docker-image-name"
+        DOCKER_IMAGE = "musing_banach"
         DOCKER_TAG = "latest"
     }
 
@@ -26,7 +26,7 @@ pipeline {
                     // Assuming you have a build script or a command to create cicdjenkins.jar
                     sh './gradlew build' // Adjust this command to match your build tool
                 }
-                archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true // Adjust the path to your JAR
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true // Adjust the path to your JAR
             }
         }
 
