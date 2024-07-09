@@ -16,15 +16,28 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the specified GitHub repository
-                git branch: 'main', url: 'https://github.com/sialorama/cicdjenkins.git', credentialsId: 'gitcred'
+                git branch: 'main', url: 'https://github.com/sialorama/cicdjenkins.git', credentialsId: 'credgit'
             }
         }
 
-        stage('Build') {
+        stage('Build Jar') {
             steps {
                 script {
-                    // Build the Docker image using the Dockerfile in the repository
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    // Assuming you have a build script or a command to create cicdjenkins.jar
+                    sh './gradlew build' // Adjust this command to match your build tool
+                }
+                archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true // Adjust the path to your JAR
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image, including the cicdjenkins.jar in the Dockerfile context
+                    sh """
+                        cp build/libs/cicdjenkins.jar .
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                    """
                 }
             }
         }
@@ -45,7 +58,7 @@ pipeline {
                     // Use Docker credentials to log in and push the image to Docker Hub
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials-id', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
                         // Log in to Docker Hub
-                        sh "echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin"
+                        sh "echo \$DOCKER_HUB_PASSWORD | docker login -u \$DOCKER_HUB_USERNAME --password-stdin"
                         // Push the Docker image to Docker Hub
                         sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
                     }
@@ -58,7 +71,9 @@ pipeline {
         always {
             // Cleanup step to remove the Docker image from the local registry
             script {
-                sh "docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                def dockerImage = env.DOCKER_IMAGE
+                def dockerTag = env.DOCKER_TAG
+                sh "docker rmi ${dockerImage}:${dockerTag}"
             }
         }
     }
