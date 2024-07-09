@@ -33,7 +33,7 @@ pipeline {
                 script {
                     // Run tests within a Docker container created from the built image
                     try {
-                        sh "docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG} your-test-command"
+                        sh "docker run --rm ${DOCKER_IMAGE}:${DOCKER_TAG} ./mvn"
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
                         error "Tests failed: ${e.message}"
